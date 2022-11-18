@@ -14,7 +14,13 @@ namespace ConsignmentShopUI
     public partial class ConsignmentShop : Form
     {
         private Store store = new Store();
-        BindingSource itemBinding= new BindingSource();
+        private List<Item> shoppingCartData = new List<Item>();
+        private decimal storeProfit = 0;
+        private bool extraDetails = false;
+
+        BindingSource itemBinding = new BindingSource();
+        BindingSource cartBinding = new BindingSource();
+        BindingSource vendorsBinding = new BindingSource();
         public ConsignmentShop()
         {
             InitializeComponent();
@@ -24,9 +30,23 @@ namespace ConsignmentShopUI
             itemBinding.DataSource= store.Items ;
             itemListbox.DataSource = itemBinding;
 
-            itemListbox.DisplayMember= "";
-            itemListbox.ValueMember= "";
+            itemListbox.DisplayMember= "Display";
+            itemListbox.ValueMember= "Display";
 
+            cartBinding.DataSource = shoppingCartData;
+            shoppingCartListbox.DataSource = cartBinding;
+
+            shoppingCartListbox.DisplayMember = "Display";
+            shoppingCartListbox.ValueMember = "Display";
+
+            vendorsBinding.DataSource = store.Vendors;
+            //vendorListbox.DataSource = vendorsBinding;
+
+            //vendorListbox.DisplayMember = "Display";
+            //vendorListbox.ValueMember = "Display";
+
+
+            //ExtraDetailsVisibility(false);
         }
 
         private void ConsignmentShop_Load(object sender, EventArgs e)
@@ -110,6 +130,20 @@ namespace ConsignmentShopUI
                 Owner = store.Vendors[0]
             });
 
+        }
+
+        private void addToCart_Click(object sender, EventArgs e)
+        {
+            //MessageBox.Show("I clicked"); // To test the click button function properly
+            //
+            Item selectedItem = (Item)itemListbox.SelectedItem;
+            MessageBox.Show(selectedItem.Title);
+
+            shoppingCartData.Add(selectedItem);
+            cartBinding.ResetBindings(false);
+
+            store.Items.Remove(selectedItem);
+            itemBinding.ResetBindings(false);
         }
     }
 }
