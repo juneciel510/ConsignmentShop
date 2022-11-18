@@ -137,13 +137,28 @@ namespace ConsignmentShopUI
             //MessageBox.Show("I clicked"); // To test the click button function properly
             //
             Item selectedItem = (Item)itemListbox.SelectedItem;
-            MessageBox.Show(selectedItem.Title);
 
             shoppingCartData.Add(selectedItem);
             cartBinding.ResetBindings(false);
 
             store.Items.Remove(selectedItem);
             itemBinding.ResetBindings(false);
+        }
+
+        private void makePurchase_Click(object sender, EventArgs e)
+        {
+            decimal TotalPrice = 0;
+            
+            foreach (Item item in shoppingCartData)
+            {
+                TotalPrice += item.Price;
+            }
+
+            shoppingCartData.Clear();
+            
+            
+            MessageBox.Show("Total price " + TotalPrice.ToString());
+            cartBinding.ResetBindings(false);
         }
     }
 }
