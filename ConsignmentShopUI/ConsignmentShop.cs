@@ -21,6 +21,7 @@ namespace ConsignmentShopUI
         BindingSource itemBinding = new BindingSource();
         BindingSource cartBinding = new BindingSource();
         BindingSource vendorsBinding = new BindingSource();
+        BindingSource storeBinding = new BindingSource();
         public ConsignmentShop()
         {
             InitializeComponent();
@@ -40,10 +41,19 @@ namespace ConsignmentShopUI
             shoppingCartListbox.ValueMember = "Display";
 
             vendorsBinding.DataSource = store.Vendors;
-            //vendorListbox.DataSource = vendorsBinding;
+            vendorListbox.DataSource = vendorsBinding;
 
-            //vendorListbox.DisplayMember = "Display";
-            //vendorListbox.ValueMember = "Display";
+            vendorListbox.DisplayMember = "Display";
+            vendorListbox.ValueMember = "Display";
+
+            storeBinding.DataSource = store;
+            StoreListbox.DataSource = storeBinding;
+
+            StoreListbox.DisplayMember = "Display";
+            StoreListbox.ValueMember = "Display";
+
+
+
 
 
             //ExtraDetailsVisibility(false);
@@ -141,8 +151,6 @@ namespace ConsignmentShopUI
             shoppingCartData.Add(selectedItem);
             cartBinding.ResetBindings(false);
 
-            store.Items.Remove(selectedItem);
-            itemBinding.ResetBindings(false);
         }
 
         private void makePurchase_Click(object sender, EventArgs e)
@@ -152,6 +160,10 @@ namespace ConsignmentShopUI
             foreach (Item item in shoppingCartData)
             {
                 TotalPrice += item.Price;
+                item.Sold=true;
+                item.Owner.Incoming += item.Price * (decimal)item.Owner.Commission;
+                store.Incoming += item.Price * (1M-(decimal)item.Owner.Commission);
+                store.Items.Remove(item);
             }
 
             shoppingCartData.Clear();
@@ -159,6 +171,24 @@ namespace ConsignmentShopUI
             
             MessageBox.Show("Total price " + TotalPrice.ToString());
             cartBinding.ResetBindings(false);
+            itemBinding.ResetBindings(false);
+            vendorsBinding.ResetBindings(false);
+            storeBinding.ResetBindings(false);
+            StoreIncomingLabel.Text=store.Incoming.ToString();
+
+
+            
+
+        }
+
+        private void itemListbox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void itemListBoxLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
